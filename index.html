@@ -42,12 +42,28 @@
 <img loading="lazy" src="cat.gif"/>
 </a>
 </div>
-<div class="link-item">
-<a href="gametest.html">Adventure</a>
-<a href="gametest.html">
-<img loading="lazy" src="cat.gif"/>
-</a>
+
+
+<script>
+    // Function to detect if the user is on a mobile device
+    function isMobile() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    // If on mobile, hide the specific element
+    if (isMobile()) {
+        document.querySelector('.hide-on-mobile').style.display = 'none';
+    }
+</script>
+
+<div class="link-item hide-on-mobile">
+    <a href="gametest.html">Adventure</a>
+    <a href="gametest.html">
+        <img loading="lazy" src="cat.gif"/>
+    </a>
 </div>
+
+
 <div class="link-item">
 <a href="ipod.html">Mystery</a>
 <a href="ipod.html">

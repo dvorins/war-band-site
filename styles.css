@@ -6,6 +6,8 @@ html, body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+
+
 body {
     background-image: url('back.jpeg'); /* Set the path to your image */
     background-repeat: repeat; /* This makes the background image repeat */
