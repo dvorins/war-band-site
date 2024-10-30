@@ -1,57 +1,6 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Add this function right after getting canvas context
-function setupViewport() {
-    let viewport = document.querySelector("meta[name=viewport]");
-    if (!viewport) {
-        viewport = document.createElement('meta');
-        viewport.name = 'viewport';
-        document.head.appendChild(viewport);
-    }
-    viewport.content = 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no';
-}
-
-// Call this function immediately
-setupViewport();
-
-// Replace your existing setCanvasSize function with this one
-function setCanvasSize() {
-    if (isMobile()) {
-        // Set canvas to double the screen size on mobile for a more zoomed-out view
-        canvas.width = window.innerWidth * 2;
-        canvas.height = window.innerHeight * 2;
-        
-        // Scale the canvas display size
-        canvas.style.width = '100vw';
-        canvas.style.height = '100vh';
-    } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-}
-
-// Add this CSS (add it right after setCanvasSize)
-const style = document.createElement('style');
-style.textContent = `
-    body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        touch-action: none;
-    }
-    #gameCanvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        touch-action: none;
-    }
-`;
-document.head.appendChild(style);
-
 // Load images
 const playerImage1 = new Image();
 const playerImage2 = new Image();
@@ -75,27 +24,26 @@ const backgrounds = [
 ];
 let currentBackgroundIndex = 0;
 
+// Function to change the background
 function changeBackground() {
     document.body.style.backgroundImage = `url(${backgrounds[currentBackgroundIndex]})`;
-    currentBackgroundIndex = (currentBackgroundIndex + 1) % backgrounds.length;
+    currentBackgroundIndex = (currentBackgroundIndex + 1) % backgrounds.length; // Cycle through backgrounds
 }
+
 
 changeBackground();
 setInterval(changeBackground, 10000);
+
 
 // Track loading state
 let imagesLoaded = 0;
 
 function checkAllImagesLoaded() {
     imagesLoaded++;
-    if (imagesLoaded === 6) {
+    if (imagesLoaded === 6) {  // 6 images: 2 player images + 3 platform images + 1 star image
         restartGame();
-        gameLoop();
+        gameLoop();  // Ensure gameLoop is defined before calling it
     }
-}
-
-function isMobile() {
-    return /Mobi|Android/i.test(navigator.userAgent);
 }
 
 // Set onload handlers
@@ -106,33 +54,19 @@ medPlatImage.onload = checkAllImagesLoaded;
 largePlatImage.onload = checkAllImagesLoaded;
 starImage.onload = checkAllImagesLoaded;
 
-// Adjust canvas size based on device
-function setCanvasSize() {
-    if (isMobile()) {
-        // On mobile, use full screen width and adjust height proportionally
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight * 0.9; // Leave some space for browser UI
-    } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-}
-
-setCanvasSize();
-window.addEventListener('resize', setCanvasSize);
-
-// Scale factors for mobile
-const mobileScale = isMobile() ? 0.7 : 1; // Reduce size of elements on mobile
+// Set canvas size
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 const player = {
     x: canvas.width / 2 - 10,
     y: canvas.height / 2 - 20,
-    width: 70 * mobileScale,
-    height: 50 * mobileScale,
+    width: 70,
+    height: 50,
     dx: 0,
     dy: 0,
-    gravity: 0.2, // Increased gravity for more responsive feel
-    jumpStrength: -10,
+    gravity: 0.1,
+    jumpStrength: -8,
     onGround: false,
     canDoubleJump: true,
 };
@@ -140,11 +74,11 @@ const player = {
 let platforms = [];
 let stars = [];
 let touchedStars = [];
-const floorHeight = 20 * mobileScale;
-const platformHeight = 10 * mobileScale;
-const initialPlatformCount = isMobile() ? 4 : 3;
-const maxPlatforms = isMobile() ? 6 : 10;
-let scrollSpeed = isMobile() ? 5 : 4; // Adjusted base speed for mobile
+const floorHeight = 20;
+const platformHeight = 10;
+const initialPlatformCount = 3;
+const maxPlatforms = 10;
+let scrollSpeed = 4;
 let gameStarted = false;
 let jumpRequested = false;
 
@@ -153,14 +87,14 @@ let toggleImage = false;
 
 // Timer
 let startTime;
-const speedIncrement = isMobile() ? 0.05 : 0.1; // Slower speed increase on mobile
+const speedIncrement = 0.1;
 let highScore = 0;
 let starSpawnTime = Date.now();
-const starSpawnInterval = 8000; // Same interval for both platforms
-
+const starSpawnInterval = 10000; // 10 seconds
 const starScore = 10;
 let score = 0;
 
+// Switch between the two images every half second
 setInterval(() => {
     toggleImage = !toggleImage;
     currentPlayerImage = toggleImage ? playerImage1 : playerImage2;
@@ -172,21 +106,9 @@ function drawPlayer() {
 
 function getRandomPlatformImage() {
     const platformImages = [
-        { 
-            image: smallPlatImage, 
-            width: smallPlatImage.width * mobileScale, 
-            height: smallPlatImage.height * mobileScale 
-        },
-        { 
-            image: medPlatImage, 
-            width: medPlatImage.width * mobileScale, 
-            height: medPlatImage.height * mobileScale 
-        },
-        { 
-            image: largePlatImage, 
-            width: largePlatImage.width * mobileScale, 
-            height: largePlatImage.height * mobileScale 
-        }
+        { image: smallPlatImage, width: smallPlatImage.width, height: smallPlatImage.height },
+        { image: medPlatImage, width: medPlatImage.width, height: medPlatImage.height },
+        { image: largePlatImage, width: largePlatImage.width, height: largePlatImage.height }
     ];
     return platformImages[Math.floor(Math.random() * platformImages.length)];
 }
@@ -198,9 +120,8 @@ function drawPlatforms() {
 }
 
 function drawStars() {
-    const starSize = 30 * mobileScale;
     stars.forEach(star => {
-        ctx.drawImage(starImage, star.x, star.y, starSize, starSize);
+        ctx.drawImage(starImage, star.x, star.y, star.width, star.height);
     });
 }
 
@@ -208,9 +129,10 @@ const spikeImage = new Image();
 spikeImage.src = 'game/spike.png';
 
 function drawFloor() {
-    const spikeHeight = 100 * mobileScale;
-    const spikeWidth = 100 * mobileScale;
+    const spikeHeight = 100;
+    const spikeWidth = 100;
     
+    // Wait until the image is loaded before drawing the spikes
     if (spikeImage.complete) {
         for (let x = 0; x < canvas.width; x += spikeWidth) {
             ctx.drawImage(spikeImage, x, canvas.height - floorHeight - spikeHeight, spikeWidth, spikeHeight);
@@ -224,15 +146,15 @@ function drawFloor() {
     }
 }
 
+
 function drawTimer() {
     if (gameStarted) {
         const elapsedTime = (Date.now() - startTime) / 1000;
         const totalScore = Math.floor(elapsedTime) + touchedStars.length * starScore;
         ctx.fillStyle = 'white';
-        ctx.font = isMobile() ? '24px Arial' : '50px Arial'; // Smaller font on mobile
-        const yOffset = isMobile() ? 20 : 30;
-        ctx.fillText(`Score: ${totalScore}`, 10, yOffset);
-        ctx.fillText(`High Score: ${highScore.toFixed(1)}`, 10, yOffset * 2);
+        ctx.font = '50px Arial';
+        ctx.fillText(`Score: ${totalScore}`, 10, 30); // Display current score
+        ctx.fillText(`High Score: ${highScore.toFixed(1)}`, 10, 60); // Display high score
     }
 }
 
@@ -330,10 +252,7 @@ function update() {
 
     // Update speed based on elapsed time
     const elapsedTime = (Date.now() - startTime) / 1000;
-    scrollSpeed = scrollSpeed = isMobile() ? (10 + speedIncrement * elapsedTime) : (4 + speedIncrement * elapsedTime);
-    
-    
-    
+    scrollSpeed = 4 + speedIncrement * elapsedTime;
 
     // Handle stars
     if (Date.now() - starSpawnTime > starSpawnInterval) {
