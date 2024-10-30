@@ -58,9 +58,15 @@ medPlatImage.onload = checkAllImagesLoaded;
 largePlatImage.onload = checkAllImagesLoaded;
 starImage.onload = checkAllImagesLoaded;
 
-// Set canvas size
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+if (isMobile()) {
+    canvas.width = window.innerWidth * 0.8; // Reduce width on mobile
+    canvas.height = window.innerHeight * 0.8; // Reduce height on mobile
+} else {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+
 
 const player = {
     x: canvas.width / 2 - 10,
@@ -69,7 +75,7 @@ const player = {
     height: 50,
     dx: 0,
     dy: 0,
-    gravity: 0.1,
+    gravity: isMobile() ? 0.2 : 0.1,
     jumpStrength: -8,
     onGround: false,
     canDoubleJump: true,
@@ -81,7 +87,7 @@ let touchedStars = [];
 const floorHeight = 20;
 const platformHeight = 10;
 const initialPlatformCount = 3;
-const maxPlatforms = 10;
+const maxPlatforms = isMobile() ? 5 : 10; // Fewer platforms on mobile
 let scrollSpeed = isMobile() ? 10 : 4;
 let gameStarted = false;
 let jumpRequested = false;
@@ -94,7 +100,8 @@ let startTime;
 const speedIncrement = 0.1;
 let highScore = 0;
 let starSpawnTime = Date.now();
-const starSpawnInterval = 10000; // 10 seconds
+const starSpawnInterval = isMobile() ? 15000 : 10000; // Fewer stars on mobile
+
 const starScore = 10;
 let score = 0;
 
