@@ -21,8 +21,22 @@
         #gameCanvas {
             display: block;
             background-color: rgba(240, 225, 225, 0);
-            height: 100vh; /* Set height */
-            
+            width: 100%; /* Full width */
+        }
+
+        /* For mobile devices */
+        @media (max-width: 768px) {
+            #gameCanvas {
+                height: 600px; /* Fixed height for mobile */
+                margin: 20px 0; /* Top and bottom margins only */
+            }
+        }
+
+        /* For desktop devices */
+        @media (min-width: 769px) {
+            #gameCanvas {
+                height: 100vh; /* Full height for desktop */
+            }
         }
     </style>
 </head>
