@@ -46,6 +46,10 @@ function checkAllImagesLoaded() {
     }
 }
 
+function isMobile() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+}
+
 // Set onload handlers
 playerImage1.onload = checkAllImagesLoaded;
 playerImage2.onload = checkAllImagesLoaded;
@@ -78,7 +82,7 @@ const floorHeight = 20;
 const platformHeight = 10;
 const initialPlatformCount = 3;
 const maxPlatforms = 10;
-let scrollSpeed = 4;
+let scrollSpeed = isMobile() ? 10 : 4;
 let gameStarted = false;
 let jumpRequested = false;
 
@@ -252,7 +256,10 @@ function update() {
 
     // Update speed based on elapsed time
     const elapsedTime = (Date.now() - startTime) / 1000;
-    scrollSpeed = 4 + speedIncrement * elapsedTime;
+    scrollSpeed = scrollSpeed = isMobile() ? (10 + speedIncrement * elapsedTime) : (4 + speedIncrement * elapsedTime);
+    
+    
+    
 
     // Handle stars
     if (Date.now() - starSpawnTime > starSpawnInterval) {
