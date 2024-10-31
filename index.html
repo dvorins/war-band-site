@@ -15,7 +15,7 @@
     </div>
 
     <!-- Main Content -->
-    <div id="main-content" class="hidden">
+    <div id="index-main-content" class="hidden">
         
    <h1>War Machine</h1>
 
@@ -877,8 +877,10 @@ lex pappas:<br>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/0t3dQZd21yc" loading="lazy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
-
+    <img src="Images/war120.jpeg" alt="War image 120">
     <a href="2.html">NEXTNEXTNEXT</a>
+    <img src="Images/war120.jpeg" alt="War image 120">
+    <img src="Images/war120.jpeg" alt="War image 120">
 
 
     <!--made by sam dvorin XDDDD-->
@@ -886,7 +888,22 @@ lex pappas:<br>
 </div>
 </div>
 
-    <script src="script.js"></script>
+    <script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    const landingPage = document.getElementById('landing-page');
+    const mainContent = document.getElementById('index-main-content');
+
+    // Check if the current file is index.html
+   landingPage.addEventListener('click', function () {
+            landingPage.style.display = 'none'; // Hide the landing page
+            mainContent.classList.remove('hidden'); // Show the main content
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        });
+    
+});
+
+    </script>
 </body>
 </html>
 

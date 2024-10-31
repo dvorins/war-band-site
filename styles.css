@@ -2,7 +2,6 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* Prevent scrolling while landing page is visible */
     font-family: Arial, Helvetica, sans-serif;
 }
 
